@@ -1,0 +1,19 @@
+{
+  "name": "agibank-cypress",
+  "version": "1.0.0",
+  "description": "Projeto de testes E2E com Cypress para Blog do Agi",
+  "scripts": {
+    "test": "cypress run",
+    "open": "cypress open"
+  },
+  "keywords": [
+    "cypress",
+    "e2e",
+    "testing"
+  ],
+  "author": "Angelina Rodrigues",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^15.7.1"
+  }
+}
