@@ -12,7 +12,7 @@ class HomePage {
       const hasReloaded = url.includes('#') || url === 'https://blog.agibank.com.br/#';
 
       if (hasReloaded) {
-        cy.wait(500);
+        cy.wait(700);
         cy.get('a.slide-search.astra-search-icon[aria-label="Search button"]')
           .should('be.visible')
           .click();
