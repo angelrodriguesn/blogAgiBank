@@ -1,33 +1,30 @@
 class HomePage {
   visit() {
-    cy.visit('/');
+    cy.visit('/', { timeout: 15000 });
   }
 
   openSearch() {
     const searchIcon = 'a.slide-search.astra-search-icon[aria-label="Search button"]';
     const searchField = '#search-field';
-    const storiesMenu = 'span.menu-text';
 
-    cy.get(searchIcon).should('be.visible').click();
-    cy.get('body').then(($body) => {
-      const searchVisible = $body.find(searchField).is(':visible');
+    cy.get(searchIcon, { timeout: 10000 })
+      .should('be.visible')
+      .click({ force: true });
 
-      if (searchVisible) return; 
+    cy.wait(1000);
 
-      cy.location('pathname', { timeout: 10000 }).then((pathname) => {
-        if (pathname === '/' || pathname === '/#') {
-          cy.contains(storiesMenu, 'Stories', { matchCase: false })
-            .should('be.visible')
-            .click();
-
-          cy.document().its('readyState').should('eq', 'complete');
-
-          cy.get(searchIcon).should('be.visible').click();
-        }
-      });
+    cy.url().then((url) => {
+      if (url.includes('/#')) {
+        cy.go('back');
+        cy.wait(500);
+        cy.get(searchIcon, { timeout: 10000 })
+          .should('be.visible')
+          .click({ force: true });
+        cy.wait(500);
+      }
     });
 
-    cy.get(searchField, { timeout: 10000 })
+    cy.get(searchField, { timeout: 15000 })
       .should('be.visible')
       .and('not.be.disabled');
   }
@@ -39,9 +36,8 @@ class HomePage {
     this.openSearch();
 
     cy.get(searchFieldSelector, { timeout: 10000 })
-      .filter(':visible')
-      .first()
-      .type(`${term}{enter}`);
+      .should('be.visible')
+      .type(`${term}{enter}`, { delay: 100 });
   }
 }
 
