@@ -11,7 +11,6 @@ Projeto de testes end-to-end (E2E) com Cypress para validação da funcionalidad
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Como Executar](#como-executar)
 - [Testes Disponíveis](#testes-disponíveis)
-- [Troubleshooting](#troubleshooting)
 - [CI/CD Pipeline](#cicd-pipeline)
 
 ---
