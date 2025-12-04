@@ -30,7 +30,6 @@ class HomePage {
     this.visit();
     this.openSearch();
 
-    // Usar {force: true} para funcionar mesmo com visibility: hidden
     cy.get(searchFieldSelector, { timeout: 10000 })
       .should('exist')
       .type(`${term}{enter}`, { delay: 100, force: true });

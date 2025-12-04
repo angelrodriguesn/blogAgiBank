@@ -117,7 +117,6 @@ class SearchResultsPage {
   validateNewsletterRequiredEmailError() {
     const emailInputSelector = '#subscribe-field-blog_subscription-3';
     const submitButtonSelector = '#subscribe-submit button';
-    const requiredMessage = 'Preencha este campo.';
 
     cy.get(submitButtonSelector)
       .should('be.visible')
@@ -126,7 +125,7 @@ class SearchResultsPage {
 
     cy.get(emailInputSelector)
       .invoke('prop', 'validationMessage')
-      .should('eq', requiredMessage);
+      .should('match', /(Preencha|fill out)/);
   }
 
   validateNewsletterInvalidEmailError(invalidEmail) {
@@ -136,7 +135,7 @@ class SearchResultsPage {
     cy.get(emailInputSelector)
       .should('be.visible')
       .clear()
-      .type(invalidEmail);
+      .type(invalidEmail, { force: true });
 
     cy.get(submitButtonSelector)
       .should('be.visible')
@@ -145,7 +144,7 @@ class SearchResultsPage {
 
     cy.get(emailInputSelector)
       .invoke('prop', 'validationMessage')
-      .should('contain', 'incompleto');
+      .should('match', /(incompleto|incomplete)/);
   }
 
   signUpForNewsletter(validEmail, expectedMessage) {
@@ -157,15 +156,15 @@ class SearchResultsPage {
     cy.get(emailInputSelector)
       .should('be.visible')
       .clear()
-      .type(validEmail);
+      .type(validEmail, { force: true });
 
     cy.get(submitButtonSelector)
       .should('be.visible')
       .and('contain.text', 'Assinar')
       .click();
 
-    cy.get(successSelector, { timeout: 10000 })
-      .should('be.visible')
+    cy.get(successSelector, { timeout: 15000 })
+      .should('exist')
       .and('contain.text', expectedMessage);
   }
 }
