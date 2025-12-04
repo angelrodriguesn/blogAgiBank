@@ -164,7 +164,7 @@ class SearchResultsPage {
       .and('contain.text', 'Assinar')
       .click();
 
-    cy.get(successSelector)
+    cy.get(successSelector, { timeout: 10000 })
       .should('be.visible')
       .and('contain.text', expectedMessage);
   }

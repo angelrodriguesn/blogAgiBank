@@ -1,33 +1,30 @@
 class HomePage {
   visit() {
     cy.visit('/', { timeout: 15000 });
+    // Aguarda a página carregar completamente
+    cy.document().its('readyState').should('eq', 'complete');
   }
 
-  openSearch() {
-    const searchIcon = 'a.slide-search.astra-search-icon[aria-label="Search button"]';
-    const searchField = '#search-field';
-
-    cy.get(searchIcon, { timeout: 10000 })
+ openSearch() {
+    cy.get('a.slide-search.astra-search-icon')
       .should('be.visible')
-      .click({ force: true });
-
-    cy.wait(1000);
+      .click();
 
     cy.url().then((url) => {
-      if (url.includes('/#')) {
-        cy.go('back');
-        cy.wait(500);
-        cy.get(searchIcon, { timeout: 10000 })
+      const hasReloaded = url.includes('#') || url === 'https://blog.agibank.com.br/#';
+
+      if (hasReloaded) {
+        cy.wait(800);
+        cy.get('a.slide-search.astra-search-icon')
           .should('be.visible')
-          .click({ force: true });
-        cy.wait(500);
+          .click();
       }
     });
-
-    cy.get(searchField, { timeout: 15000 })
+    cy.get('#search-field', { timeout: 10000 })
       .should('be.visible')
-      .and('not.be.disabled');
+      .should('be.enabled');
   }
+
 
   searchFor(term) {
     const searchFieldSelector = '#search-field';
