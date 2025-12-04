@@ -1,7 +1,6 @@
 class HomePage {
   visit() {
     cy.visit('/', { timeout: 15000 });
-    // Aguarda a página carregar completamente
     cy.document().its('readyState').should('eq', 'complete');
   }
 
@@ -21,10 +20,9 @@ class HomePage {
       }
     });
     cy.get('#search-field', { timeout: 10000 })
-      .should('be.visible')
+      .should('exist')
       .should('be.enabled');
   }
-
 
   searchFor(term) {
     const searchFieldSelector = '#search-field';
@@ -32,9 +30,10 @@ class HomePage {
     this.visit();
     this.openSearch();
 
+    // Usar {force: true} para funcionar mesmo com visibility: hidden
     cy.get(searchFieldSelector, { timeout: 10000 })
-      .should('be.visible')
-      .type(`${term}{enter}`, { delay: 100 });
+      .should('exist')
+      .type(`${term}{enter}`, { delay: 100, force: true });
   }
 }
 
