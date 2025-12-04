@@ -6,6 +6,7 @@ on:
       - main
       - review
   pull_request:
+  workflow_dispatch:
 
 jobs:
   cypress-run:
@@ -29,7 +30,7 @@ jobs:
       - name: Run Cypress tests
         run: npm run test
 
-      - name: Upload Test Results
+      - name: Tests Results
         uses: actions/upload-artifact@v4
         with:
           name: tests-results

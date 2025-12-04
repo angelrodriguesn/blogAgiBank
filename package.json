@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Projeto de testes E2E com Cypress para Blog do Agi",
   "scripts": {
-    "test": "cypress run",
+    "test": "cypress run --browser chrome",
     "open": "cypress open"
   },
   "keywords": [
