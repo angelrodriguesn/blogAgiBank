@@ -64,8 +64,8 @@ class SearchResultsPage {
   validateArticleContent() {
     cy.get('div.entry-content.clear')
       .find('p, h1, h2, h3, h4, h5, h6')
-      .filter((_, el) => el.offsetHeight > 0 && el.offsetWidth > 0) // só elementos "visíveis"
-      .filter((_, el) => el.innerText.trim().length > 0)          // só com texto
+      .filter((_, el) => el.offsetHeight > 0 && el.offsetWidth > 0)
+      .filter((_, el) => el.innerText.trim().length > 0)
       .should('have.length.greaterThan', 0)
       .each(($el) => {
         cy.wrap($el)
@@ -75,13 +75,98 @@ class SearchResultsPage {
   }
 
   getArticle(titulo) {
-    cy.get('input[placeholder="Search..."]')
-      .eq(1)
-      .type(titulo);
+    cy.get('div.widget_search form.search-form')
+      .within(() => {
+        cy.get('input.search-field')
+          .should('be.visible')
+          .clear()
+          .type(titulo);
 
-    cy.get('button.search-submit.ast-search-submit')
-    .eq(1).click({force:true})
-    
+        cy.get('button.search-submit.ast-search-submit')
+          .should('be.visible')
+          .click({ force: true });
+      });
+  }
+
+  validateNewsletterWidget(expectedTitle, expectedSubtitle) {
+    const newsletterWidget = '#blog_subscription-3';
+    const titleSelector = `${newsletterWidget} .widget-title`;
+    const subtitleSelector = '#subscribe-text p';
+    const emailInputSelector = '#subscribe-field-blog_subscription-3';
+    const submitButtonSelector = '#subscribe-submit button';
+
+    cy.get(newsletterWidget).should('be.visible');
+
+    cy.get(titleSelector)
+      .should('be.visible')
+      .and('contain.text', expectedTitle);
+
+    cy.get(subtitleSelector)
+      .should('be.visible')
+      .and('contain.text', expectedSubtitle);
+
+    cy.get(emailInputSelector)
+      .should('be.visible')
+      .and('have.attr', 'type', 'email');
+
+    cy.get(submitButtonSelector)
+      .should('be.visible')
+      .and('contain.text', 'Assinar');
+  }
+
+  validateNewsletterRequiredEmailError() {
+    const emailInputSelector = '#subscribe-field-blog_subscription-3';
+    const submitButtonSelector = '#subscribe-submit button';
+    const requiredMessage = 'Preencha este campo.';
+
+    cy.get(submitButtonSelector)
+      .should('be.visible')
+      .and('contain.text', 'Assinar')
+      .click();
+
+    cy.get(emailInputSelector)
+      .invoke('prop', 'validationMessage')
+      .should('eq', requiredMessage);
+  }
+
+  validateNewsletterInvalidEmailError(invalidEmail) {
+    const emailInputSelector = '#subscribe-field-blog_subscription-3';
+    const submitButtonSelector = '#subscribe-submit button';
+
+    cy.get(emailInputSelector)
+      .should('be.visible')
+      .clear()
+      .type(invalidEmail);
+
+    cy.get(submitButtonSelector)
+      .should('be.visible')
+      .and('contain.text', 'Assinar')
+      .click();
+
+    cy.get(emailInputSelector)
+      .invoke('prop', 'validationMessage')
+      .should('contain', 'incompleto');
+  }
+
+  signUpForNewsletter(validEmail, expectedMessage) {
+    const emailInputSelector = '#subscribe-field-blog_subscription-3';
+    const submitButtonSelector = '#subscribe-submit button';
+    const successSelector = '#blog_subscription-3 .success p';
+
+
+    cy.get(emailInputSelector)
+      .should('be.visible')
+      .clear()
+      .type(validEmail);
+
+    cy.get(submitButtonSelector)
+      .should('be.visible')
+      .and('contain.text', 'Assinar')
+      .click();
+
+    cy.get(successSelector)
+      .should('be.visible')
+      .and('contain.text', expectedMessage);
   }
 }
 

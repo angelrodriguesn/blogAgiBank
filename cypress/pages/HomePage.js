@@ -4,23 +4,30 @@ class HomePage {
   }
 
   openSearch() {
-    cy.get('a.slide-search.astra-search-icon[aria-label="Search button"]')
+    const searchIconSelector =
+      'a.slide-search.astra-search-icon[aria-label="Search button"]';
+    const searchFieldSelector = '#search-field';
+
+    cy.document().its('readyState').should('eq', 'complete');
+    cy.get(searchIconSelector)
       .should('be.visible')
       .click();
+    cy.wait(500);
+    cy.get('body').then(($body) => {
+      const $field = $body.find(searchFieldSelector);
+      const hasVisibleSearchField =
+        $field.length && Cypress.$($field).is(':visible');
 
-    cy.url().then((url) => {
-      const hasReloaded = url.includes('#') || url === 'https://blog.agibank.com.br/#';
-
-      if (hasReloaded) {
-        cy.wait(700);
-        cy.get('a.slide-search.astra-search-icon[aria-label="Search button"]')
+      if (!hasVisibleSearchField) {
+        cy.contains('span.menu-text', 'Stories', { matchCase: false })
+          .should('be.visible')
+          .click();
+        cy.get(searchIconSelector)
           .should('be.visible')
           .click();
       }
     });
-    cy.get('#search-field', { timeout: 10000 })
-      .should('be.visible')
-      .should('be.enabled');
+    cy.get(searchFieldSelector, { timeout: 10000 }).should('be.visible');
   }
 
   searchFor(term) {
